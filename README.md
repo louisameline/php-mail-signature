@@ -15,12 +15,10 @@ If the class fails to sign the e-mail, the returned DKIM header will be empty an
 
 NOTE: you will NOT be able to use Domain Keys with PHP's mail() function, since it does not allow to prepend the DK header before the To and Subject ones. DKIM is ok with that, but Domain Keys is not. If you still want Domain Keys, you will have to manage to send your mail straight to your MTA without the default mail() function.
 
-Successfully tested against Gmail, Yahoo Mail, Live.com, appmaildev.com
-Hope it helps and saves you plenty of time. Let me know if you find issues.
+Successfully tested against Gmail, Yahoo Mail, Live.com, appmaildev.com.
+I hope it helps and saves you plenty of time. Feedback is welcome.
 
-For more info, you should read :
-http://www.ietf.org/rfc/rfc4871.txt
-http://www.zytrax.com/books/dns/ch9/dkim.html
+For more info, you should read http://www.ietf.org/rfc/rfc4871.txt and http://www.zytrax.com/books/dns/ch9/dkim.html
 
 ```php
 <?php
