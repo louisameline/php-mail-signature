@@ -1,30 +1,14 @@
-php-mail-signature
-==================
+<?php
 
-A standalone PHP class to sign your e-mails with DKIM and Domain Keys.
-License LGPL v2.1
-Author:	Louis Ameline - 04/2012
+/*
+	Try this sample code to try DKIM and/or Domain Keys signature headers in your e-mails.
+	Uncomment the mail() lines to actually test the sending of e-mail.
+	Note that Domain Keys is currently NOT usable with PHP's mail() function (see the class file for more information).
+	So Domain Keys is disabled by default, enable it in the options if you need it.
+*/
 
-This class is based on the work made on PHP-MAILER with the following differences :
-- it is a standalone class, easy to use
-- it supports the Domain Keys header
-- it supports UTF-8
-- it will let you choose the headers you want to base the signature on
-- it will let you choose between simple and relaxed body canonicalization
 
-If the class fails to sign the e-mail, the returned DKIM header will be empty and the mail will still be sent, just unsigned. A php warning is thrown for logging.
-
-NOTE: you will NOT be able to use Domain Keys with PHP's mail() function, since it does not allow to prepend the DK header before the To and Subject ones. DKIM is ok with that, but Domain Keys is not. If you still want Domain Keys, you will have to manage to send your mail straight to your MTA without the default mail() function.
-
-Successfully tested against Gmail, Yahoo Mail, Live.com, appmaildev.com
-Hope it helps and saves you plenty of time. Let me know if you find issues.
-
-For more info, you should read :
-http://www.ietf.org/rfc/rfc4871.txt
-http://www.zytrax.com/books/dns/ch9/dkim.html
-
-<pre><code>
-// 0) YOUR E-MAIL
+// YOUR E-MAIL
 $to = 'test@example.com';
 
 $subject = 'My subject';
@@ -41,11 +25,11 @@ $message =
 			Hello, this a DKIM test e-mail
 		</body>
 	</html>';
-
-
+	
+	
 
 // 1) YOU USUALLY DID :
-mail($to, $subject, $message, $headers);
+// mail($to, $subject, $message, $headers);
 
 
 
@@ -66,7 +50,7 @@ $signature = new mail_signature(
 );
 $signed_headers = $signature -> get_signed_headers($to, $subject, $message, $headers);
 
-mail($to, $subject, $message, $signed_headers.$headers);
+// mail($to, $subject, $message, $signed_headers.$headers);
 
 
 
@@ -103,6 +87,6 @@ $signature = new mail_signature(
 );
 $signed_headers = $signature -> get_signed_headers($to, $subject, $message, $headers);
 
-mail($to, $subject, $message, $signed_headers.$headers);
+// mail($to, $subject, $message, $signed_headers.$headers);
 
-</code></pre>
+?>
