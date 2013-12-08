@@ -23,16 +23,17 @@ For more info, you should read :
 http://www.ietf.org/rfc/rfc4871.txt
 http://www.zytrax.com/books/dns/ch9/dkim.html
 
-<pre><code>
-// 0) YOUR E-MAIL
-$to = 'test@example.com';
+<pre><code><?php
 
+// 0) YOUR E-MAIL
+
+$to = 'test@example.com';
 $subject = 'My subject';
 
 $headers =
-'MIME-Version: 1.0
-From: "Sender" <sender@example.com>
-Content-type: text/html; charset=utf8';
+	'MIME-Version: 1.0
+	From: "Sender" <sender@example.com>
+	Content-type: text/html; charset=utf8';
 
 $message =
 	'<html>
@@ -105,4 +106,4 @@ $signed_headers = $signature -> get_signed_headers($to, $subject, $message, $hea
 
 mail($to, $subject, $message, $signed_headers.$headers);
 
-</code></pre>
+?></code></pre>
