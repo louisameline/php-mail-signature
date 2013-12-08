@@ -22,8 +22,8 @@ For more info, you should read :
 http://www.ietf.org/rfc/rfc4871.txt
 http://www.zytrax.com/books/dns/ch9/dkim.html
 
-```html
-<pre><code><?php
+```php
+<?php
 
 // 0) YOUR E-MAIL
 
@@ -106,5 +106,5 @@ $signed_headers = $signature -> get_signed_headers($to, $subject, $message, $hea
 
 mail($to, $subject, $message, $signed_headers.$headers);
 
-?></code></pre>
+?>
 ```
