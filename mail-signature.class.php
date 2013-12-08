@@ -4,7 +4,9 @@
 
 php-mail-signature v1.0.1
 
+https://github.com/louisameline/php-mail-signature
 Author:	Louis Ameline - 04/2012
+
 
 This stand-alone DKIM class is based on the work made on PHP-MAILER (see license below).
 The differences are :

@@ -4,6 +4,8 @@ php-mail-signature
 A standalone PHP class to sign your e-mails with DKIM and Domain Keys 04/2012.
 License LGPL v2.1
 
+Project page : https://github.com/louisameline/php-mail-signature
+
 This class is based on the work made on PHP-MAILER with the following differences :
 - it is a standalone class, easy to use
 - it supports the Domain Keys header
