@@ -162,7 +162,7 @@ class mail_signature {
 		// a header value which is spread over several lines must be 1-lined
 		$sHeaders = preg_replace("/\n\s+/", " ", $sHeaders);   // Replace LF and spaces into single SP
 		$sHeaders = preg_replace("/\r\n\s+/", " ", $sHeaders); // Replace CR,LF and spaces into single SP
-		$sHeaders = preg_replace("\r\n", "\n", $sHeaders);     // Replace CR,LF into LF
+		//$sHeaders = preg_replace("\r\n", "\n", $sHeaders);     // Replace CR,LF into LF
 		
 		// Explode Header Line
 		$lines = explode("\n", $sHeaders);		
