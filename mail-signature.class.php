@@ -449,7 +449,7 @@ class mail_signature {
 	}
 }
 
-public function get_signed_headers_mod($to, $subject, &$body, &$headers){
+function get_signed_headers_mod($to, $subject, &$body, &$headers){
 	$signature = new mail_signature(
 		MAIL_RSA_PRIV,
 		MAIL_RSA_PASSPHRASE,
