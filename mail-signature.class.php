@@ -160,7 +160,7 @@ class mail_signature {
 		$aHeaders = array();
 		
 		// a header value which is spread over several lines must be 1-lined
-		$sHeaders = preg_replace("/\r\n\s+/", " ", $sHeaders); // Replace CR,LF and spaces into single SP
+		$sHeaders = preg_replace("/\n\s+/", " ", $sHeaders); 
 		
 		// Explode Header Line
 		$lines = explode("\r\n", $sHeaders);
@@ -447,6 +447,16 @@ class mail_signature {
 		
 		return $signed_headers;
 	}
+}
+
+public function get_signed_headers_mod($to, $subject, &$body, &$headers){
+	$signature = new mail_signature(
+		MAIL_RSA_PRIV,
+		MAIL_RSA_PASSPHRASE,
+		MAIL_DOMAIN,
+		MAIL_SELECTOR
+	);
+	$signature -> get_signed_headers_mod($to, $subject, $body, $headers);
 }
 
 ?>

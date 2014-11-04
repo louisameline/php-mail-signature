@@ -55,6 +55,11 @@ mail($to, $subject, $message, $headers);
 require_once('mail-signature.class.php');
 require_once('mail-signature.config.php');
 
+get_signed_headers_mod($to, $subject, $message, $headers);
+mail($to, $subject, $message, $headers);//Body and headers alredy modifited
+
+
+// 2A) NOW YOU WILL DO (after setting up the config file and your DNS records) :
 $signature = new mail_signature(
 	MAIL_RSA_PRIV,
 	MAIL_RSA_PASSPHRASE,

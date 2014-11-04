@@ -43,6 +43,12 @@ echo '<br>1:-<br>';
 require_once('mail-signature.class.php');
 require_once('mail-signature.config.php');
 
+// 1a) NOW YOU WILL DO (after setting up the config file and your DNS records) :
+// don't Make sure linefeeds are in CRLF format - it is essential for signing
+get_signed_headers_mod($to, $subject, $message, $headers);
+mail($to, $subject, $message, $headers);//Body and headers alredy modifited
+echo '<br>1a:+<br>';
+
 // 2) NOW YOU WILL DO (after setting up the config file and your DNS records) :
 // don't Make sure linefeeds are in CRLF format - it is essential for signing
 
@@ -53,8 +59,8 @@ $signature = new mail_signature(
 	MAIL_SELECTOR
 );
 
-$signed_headers = $signature -> get_signed_headers_mod($to, $subject.'2', $message, $headers);
-mail($to, $subject.'2', $message, $headers);//Body and headers alredy modifited
+$signed_headers = $signature -> get_signed_headers_mod($to, $subject.'2', $message, $headers);//Body and headers alredy modifited
+mail($to, $subject.'2', $message, $headers);
 echo '<br>2:'.$signed_headers.'<br>';
 
 // 3) NOW YOU WILL DO (after setting up the config file and your DNS records) :
