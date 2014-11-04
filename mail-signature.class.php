@@ -401,6 +401,10 @@ class mail_signature {
 		
 		$signed_headers = '';
 		
+		//if use \n
+		$message = preg_replace('/(?<!\r)\n/', "\r\n", $message);
+		$headers = preg_replace('/(?<!\r)\n/', "\r\n", $headers);
+		
 		// prevent header injection
 		if(strpos($to, "\n") !== false or strpos($subject, "\n") !== false){
 			trigger_error(sprintf('Aborted mail signature because of potential header injection : %s', $to), E_USER_WARNING);
