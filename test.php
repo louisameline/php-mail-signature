@@ -12,6 +12,7 @@ define('MAILHEADER_EOL', "\n");
 
 // YOUR E-MAIL
 $to = 'test@example.com';
+if ($to == 'test@example.com') echo '<br>Edit $to='.$to.' variable<br>';
 
 $subject = 'My subject - Test';
 
@@ -32,6 +33,7 @@ $message =
 
 // 1) YOU USUALLY DID :
 mail($to, $subject.'1', $message, $headers);
+echo '<br>1:-<br>';
 
 
 
@@ -53,7 +55,7 @@ $signature = new mail_signature(
 $signed_headers = $signature -> get_signed_headers($to, $subject.'2', $message, $headers);
 
 mail($to, $subject.'2', $message, $signed_headers.$headers);
-
+echo '<br>2:'.$signed_headers.'<br>';
 
 
 // 3) OR USE OPTIONS TO ADD SOME FLAVOR :
@@ -90,5 +92,6 @@ $signature = new mail_signature(
 $signed_headers = $signature -> get_signed_headers($to, $subject.'3', $message, $headers);
 
 mail($to, $subject.'3', $message, $signed_headers.$headers);
+echo '<br>3:'.$signed_headers.'<br>';
 
 ?>
