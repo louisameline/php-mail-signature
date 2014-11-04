@@ -8,6 +8,7 @@
 */
 
 //view error
+ini_set("display_errors", "1");
 error_reporting(E_ALL);
 
 //define('MAILHEADER_EOL', "\r\n");
@@ -41,7 +42,7 @@ echo '<br>1:-<br>';
 // use this the project
 
 require_once('mail-signature.class.php');
-require_once('mail-signature.config.php');
+include('mail-signature.config.php');
 
 // 1a) NOW YOU WILL DO (after setting up the config file and your DNS records) :
 // don't Make sure linefeeds are in CRLF format - it is essential for signing
