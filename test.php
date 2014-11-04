@@ -22,12 +22,12 @@ $headers =
 'Content-type: text/html; charset=utf8';
 
 $message =
-	'<html>
-		<header></header>
-		<body>
-			Hello, this a DKIM test e-mail
-		</body>
-	</html>';
+	'<html>'.MAILHEADER_EOL.
+		'<header></header>'.MAILHEADER_EOL.
+		'<body>'.MAILHEADER_EOL.
+			'Hello, this a DKIM test e-mail'.MAILHEADER_EOL.
+		'</body>'.MAILHEADER_EOL.
+	'</html>';
 	
 	
 
@@ -38,10 +38,6 @@ echo '<br>1:-<br>';
 
 
 // 2) NOW YOU WILL DO (after setting up the config file and your DNS records) :
-
-// Make sure linefeeds are in CRLF format - it is essential for signing
-$message = preg_replace('/(?<!\r)\n/', "\r\n", $message);
-$headers = preg_replace('/(?<!\r)\n/', "\r\n", $headers);
 
 require_once('mail-signature.class.php');
 require_once('mail-signature.config.php');
@@ -56,6 +52,21 @@ $signed_headers = $signature -> get_signed_headers($to, $subject.'2', $message, 
 
 mail($to, $subject.'2', $message, $signed_headers.$headers);
 echo '<br>2:'.$signed_headers.'<br>';
+
+// Make sure linefeeds are in CRLF format - it is essential for signing
+$message = preg_replace('/(?<!\r)\n/', "\r\n", $message);
+$headers = preg_replace('/(?<!\r)\n/', "\r\n", $headers);
+
+$signature = new mail_signature(
+	MAIL_RSA_PRIV,
+	MAIL_RSA_PASSPHRASE,
+	MAIL_DOMAIN,
+	MAIL_SELECTOR
+);
+$signed_headers = $signature -> get_signed_headers($to, $subject.'3', $message, $headers);
+
+mail($to, $subject.'3', $message, $signed_headers.$headers);
+echo '<br>3:'.$signed_headers.'<br>';
 
 
 // 3) OR USE OPTIONS TO ADD SOME FLAVOR :
@@ -89,9 +100,9 @@ $signature = new mail_signature(
 	MAIL_SELECTOR,
 	$options
 );
-$signed_headers = $signature -> get_signed_headers($to, $subject.'3', $message, $headers);
+$signed_headers = $signature -> get_signed_headers($to, $subject.'4', $message, $headers);
 
-mail($to, $subject.'3', $message, $signed_headers.$headers);
-echo '<br>3:'.$signed_headers.'<br>';
+mail($to, $subject.'4', $message, $signed_headers.$headers);
+echo '<br>4:'.$signed_headers.'<br>';
 
 ?>
