@@ -11,8 +11,8 @@
 define('MAILHEADER_EOL', "\n");
 
 // YOUR E-MAIL
-$to = 'test@example.com';
-if ($to == 'test@example.com') echo '<br>Edit $to='.$to.' variable<br>';
+$to = MAIL_TEST_EMAIL;
+if ($to == 'admin@example.com') echo '<br>Edit MAIL_TEST_EMAIL in mail-signature.config.php<br>';
 
 $subject = 'My subject - Test';
 
