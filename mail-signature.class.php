@@ -1,5 +1,5 @@
 <?php
-
+require_once('mail-signature.config.php');
 /*
 
 php-mail-signature v1.0.1
@@ -160,8 +160,9 @@ class mail_signature {
 		$aHeaders = array();
 		
 		// a header value which is spread over several lines must be 1-lined
-		$sHeaders = preg_replace("/\n\s+/", " ", $sHeaders);
+		$sHeaders = preg_replace("/\n\s+/", " ", $sHeaders); 
 		
+		// Explode Header Line
 		$lines = explode("\r\n", $sHeaders);
 		
 		foreach($lines as $key => $line){
@@ -394,9 +395,8 @@ class mail_signature {
 	
 	// you may leave $to and $subject empty if the corresponding headers are already in $headers
 	public function get_signed_headers($to, $subject, $body, $headers){
-		
 		$signed_headers = '';
-		
+
 		// prevent header injection
 		if(strpos($to, "\n") !== false or strpos($subject, "\n") !== false){
 			trigger_error(sprintf('Aborted mail signature because of potential header injection : %s', $to), E_USER_WARNING);
@@ -433,6 +433,30 @@ class mail_signature {
 		
 		return $signed_headers;
 	}
+	
+	public function get_signed_headers_mod($to, $subject, &$body, &$headers){
+		//if use \n
+		$body = preg_replace('/(?<!\r)\n/', "\r\n", $body);
+		$headers = preg_replace('/(?<!\r)\n/', "\r\n", $headers);
+		
+		//use base function
+		$signed_headers = $this -> get_signed_headers($to, $subject, $body, $headers);
+		
+		//add header
+		$headers = $signed_headers.$headers;
+		
+		return $signed_headers;
+	}
+}
+
+function get_signed_headers_mod($to, $subject, &$body, &$headers){
+	$signature = new mail_signature(
+		MAIL_RSA_PRIV,
+		MAIL_RSA_PASSPHRASE,
+		MAIL_DOMAIN,
+		MAIL_SELECTOR
+	);
+	$signature -> get_signed_headers_mod($to, $subject, $body, $headers);
 }
 
 ?>

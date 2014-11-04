@@ -49,4 +49,6 @@ define('MAIL_IDENTITY', NULL);
 // Selector used in your DKIM DNS record, e.g. : selector._domainkey.MAIL_DKIM_DOMAIN
 define('MAIL_SELECTOR', 'selector');
 
+//Email for test
+define('MAIL_TEST_EMAIL', 'admin@example.com');  
 ?>
