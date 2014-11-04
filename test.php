@@ -13,7 +13,7 @@ define('MAILHEADER_EOL', "\n");
 // YOUR E-MAIL
 $to = 'test@example.com';
 
-$subject = 'My subject';
+$subject = 'My subject - Test';
 
 $headers =
 'MIME-Version: 1.0'.MAILHEADER_EOL.
@@ -31,7 +31,7 @@ $message =
 	
 
 // 1) YOU USUALLY DID :
-// mail($to, $subject, $message, $headers);
+mail($to, $subject.'1', $message, $headers);
 
 
 
@@ -50,9 +50,9 @@ $signature = new mail_signature(
 	MAIL_DOMAIN,
 	MAIL_SELECTOR
 );
-$signed_headers = $signature -> get_signed_headers($to, $subject, $message, $headers);
+$signed_headers = $signature -> get_signed_headers($to, $subject.'2', $message, $headers);
 
-// mail($to, $subject, $message, $signed_headers.$headers);
+mail($to, $subject.'2', $message, $signed_headers.$headers);
 
 
 
@@ -87,8 +87,8 @@ $signature = new mail_signature(
 	MAIL_SELECTOR,
 	$options
 );
-$signed_headers = $signature -> get_signed_headers($to, $subject, $message, $headers);
+$signed_headers = $signature -> get_signed_headers($to, $subject.'3', $message, $headers);
 
-// mail($to, $subject, $message, $signed_headers.$headers);
+mail($to, $subject.'3', $message, $signed_headers.$headers);
 
 ?>
