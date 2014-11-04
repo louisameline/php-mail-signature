@@ -441,7 +441,9 @@ class mail_signature {
 		//if use \n
 		$body = preg_replace('/(?<!\r)\n/', "\r\n", $body);
 		$headers = preg_replace('/(?<!\r)\n/', "\r\n", $headers);
-		$headers = _get_signed_headers($to, $subject, $body, $headers).$headers;
+		$signed_headers = _get_signed_headers($to, $subject, $body, $headers);
+		$headers = $signed_headers.$headers;
+		return $signed_headers;
 	}
 }
 
