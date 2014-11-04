@@ -7,6 +7,9 @@
 	So Domain Keys is disabled by default, enable it in the options if you need it.
 */
 
+//view error
+error_reporting(E_ALL);
+
 //define('MAILHEADER_EOL', "\r\n");
 define('MAILHEADER_EOL', "\n");
 
@@ -35,12 +38,13 @@ $message =
 mail($to, $subject.'1', $message, $headers);
 echo '<br>1:-<br>';
 
-
-
-// 2) NOW YOU WILL DO (after setting up the config file and your DNS records) :
+// use this the project
 
 require_once('mail-signature.class.php');
 require_once('mail-signature.config.php');
+
+// 2) NOW YOU WILL DO (after setting up the config file and your DNS records) :
+// don't Make sure linefeeds are in CRLF format - it is essential for signing
 
 $signature = new mail_signature(
 	MAIL_RSA_PRIV,
@@ -48,10 +52,12 @@ $signature = new mail_signature(
 	MAIL_DOMAIN,
 	MAIL_SELECTOR
 );
-$signed_headers = $signature -> get_signed_headers($to, $subject.'2', $message, $headers);
 
-mail($to, $subject.'2', $message, $signed_headers.$headers);
+$signed_headers = $signature -> get_signed_headers_mod($to, $subject.'2', $message, $headers);
+mail($to, $subject.'2', $message, $headers);//Body and headers alredy modifited
 echo '<br>2:'.$signed_headers.'<br>';
+
+// 3) NOW YOU WILL DO (after setting up the config file and your DNS records) :
 
 // Make sure linefeeds are in CRLF format - it is essential for signing
 $message = preg_replace('/(?<!\r)\n/', "\r\n", $message);
@@ -63,13 +69,13 @@ $signature = new mail_signature(
 	MAIL_DOMAIN,
 	MAIL_SELECTOR
 );
-$signed_headers = $signature -> get_signed_headers($to, $subject.'3', $message, $headers);
+$signed_headers = $signature -> get_signed_headers($to, $subject.'3', $message, $headers);//$message and $headers modification before in line current-20
 
-mail($to, $subject.'3', $message, $signed_headers.$headers);
+mail($to, $subject.'3', $message, $signed_headers.$headers);//add hand result get_signed_headers
 echo '<br>3:'.$signed_headers.'<br>';
 
 
-// 3) OR USE OPTIONS TO ADD SOME FLAVOR :
+// 4) OR USE OPTIONS TO ADD SOME FLAVOR :
 
 $message = preg_replace('/(?<!\r)\n/', "\r\n", $message);
 $headers = preg_replace('/(?<!\r)\n/', "\r\n", $headers);
@@ -100,9 +106,9 @@ $signature = new mail_signature(
 	MAIL_SELECTOR,
 	$options
 );
-$signed_headers = $signature -> get_signed_headers($to, $subject.'4', $message, $headers);
+$signed_headers = $signature -> get_signed_headers($to, $subject.'4', $message, $headers);//$message and $headers modification before in line current-20
 
-mail($to, $subject.'4', $message, $signed_headers.$headers);
+mail($to, $subject.'4', $message, $signed_headers.$headers);//add hand result get_signed_headers
 echo '<br>4:'.$signed_headers.'<br>';
 
 ?>

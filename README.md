@@ -49,15 +49,28 @@ $message =
 mail($to, $subject, $message, $headers);
 
 
-
 // 2) NOW YOU WILL DO (after setting up the config file and your DNS records) :
+
+// Make sure linefeeds are in CRLF format - it is essential for signing
+require_once('mail-signature.class.php');
+require_once('mail-signature.config.php');
+
+$signature = new mail_signature(
+	MAIL_RSA_PRIV,
+	MAIL_RSA_PASSPHRASE,
+	MAIL_DOMAIN,
+	MAIL_SELECTOR
+);
+$signed_headers = $signature -> get_signed_headers_mod($to, $subject, $message, $headers);
+
+mail($to, $subject, $message, $headers);
+
+
+// 3) NOW YOU WILL DO (after setting up the config file and your DNS records) :
 
 // Make sure linefeeds are in CRLF format - it is essential for signing
 $message = preg_replace('/(?<!\r)\n/', "\r\n", $message);
 $headers = preg_replace('/(?<!\r)\n/', "\r\n", $headers);
-
-require_once('mail-signature.class.php');
-require_once('mail-signature.config.php');
 
 $signature = new mail_signature(
 	MAIL_RSA_PRIV,
@@ -70,8 +83,7 @@ $signed_headers = $signature -> get_signed_headers($to, $subject, $message, $hea
 mail($to, $subject, $message, $signed_headers.$headers);
 
 
-
-// 3) OR USE OPTIONS TO ADD SOME FLAVOR :
+// 4) OR USE OPTIONS TO ADD SOME FLAVOR :
 
 $message = preg_replace('/(?<!\r)\n/', "\r\n", $message);
 $headers = preg_replace('/(?<!\r)\n/', "\r\n", $headers);
