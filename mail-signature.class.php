@@ -397,14 +397,9 @@ class mail_signature {
 	}
 	
 	// you may leave $to and $subject empty if the corresponding headers are already in $headers
-	public function get_signed_headers($to, $subject, $body, $headers){
-		
+	public function _get_signed_headers($to, $subject, $body, $headers){
 		$signed_headers = '';
-		
-		//if use \n
-		$message = preg_replace('/(?<!\r)\n/', "\r\n", $message);
-		$headers = preg_replace('/(?<!\r)\n/', "\r\n", $headers);
-		
+
 		// prevent header injection
 		if(strpos($to, "\n") !== false or strpos($subject, "\n") !== false){
 			trigger_error(sprintf('Aborted mail signature because of potential header injection : %s', $to), E_USER_WARNING);
@@ -440,6 +435,13 @@ class mail_signature {
 		}
 		
 		return $signed_headers;
+	}
+	
+	public function get_signed_headers($to, $subject, &$body, &$headers){
+		//if use \n
+		$body = preg_replace('/(?<!\r)\n/', "\r\n", $body);
+		$headers = preg_replace('/(?<!\r)\n/', "\r\n", $headers);
+		$headers = _get_signed_headers($to, $subject, $body, $headers).$headers;
 	}
 }
 
