@@ -1,5 +1,5 @@
 <?php
-
+require_once('mail-signature.config.php');
 /*
 
 php-mail-signature v1.0.1

@@ -15,22 +15,20 @@ error_reporting(E_ALL);
 define('MAILHEADER_EOL', "\n");
 
 // use this the project
-
 require_once('mail-signature.class.php');
-require_once('mail-signature.config.php');
 
 // YOUR E-MAIL
 $to = MAIL_TEST_EMAIL;
 if ($to == 'admin@example.com') echo '<br>Edit MAIL_TEST_EMAIL in mail-signature.config.php<br>';
 
-$subject = 'My subject - Test';
+$subject_orig = 'My subject - Test';
 
-$headers =
+$headers_orig =
 'MIME-Version: 1.0'.MAILHEADER_EOL.
 'From: "Sender" <sender@example.com>'.MAILHEADER_EOL.
 'Content-type: text/html; charset=utf8';
 
-$message =
+$message_orig =
 	'<html>'.MAILHEADER_EOL.
 		'<header></header>'.MAILHEADER_EOL.
 		'<body>'.MAILHEADER_EOL.
@@ -41,18 +39,29 @@ $message =
 	
 
 // 1) YOU USUALLY DID :
+$subject=$subject_orig.'1'; 
+$message=$message_orig;
+$headers=$headers_orig;
 mail($to, $subject.'1', $message, $headers);
-echo '<br>1:-<br>';
-
-// 1a) NOW YOU WILL DO (after setting up the config file and your DNS records) :
-// don't Make sure linefeeds are in CRLF format - it is essential for signing
-get_signed_headers_mod($to, $subject, $message, $headers);
-mail($to, $subject, $message, $headers);//Body and headers alredy modifited
-echo '<br>1a:+<br>';
+echo '<br>1:-<br>'.MAILHEADER_EOL;
 
 // 2) NOW YOU WILL DO (after setting up the config file and your DNS records) :
 // don't Make sure linefeeds are in CRLF format - it is essential for signing
+$subject=$subject_orig.'2'; 
+$message=$message_orig;
+$headers=$headers_orig;
+//require_once('mail-signature.class.php');
+get_signed_headers_mod($to, $subject, $message, $headers);
+mail($to, $subject, $message, $headers);//Body and headers alredy modifited
+echo '<br>2:+<br>';
 
+// 3) NOW YOU WILL DO (after setting up the config file and your DNS records) :
+// don't Make sure linefeeds are in CRLF format - it is essential for signing
+
+$subject=$subject_orig.'3'; 
+$message=$message_orig;
+$headers=$headers_orig;
+//require_once('mail-signature.class.php');
 $signature = new mail_signature(
 	MAIL_RSA_PRIV,
 	MAIL_RSA_PASSPHRASE,
@@ -60,33 +69,40 @@ $signature = new mail_signature(
 	MAIL_SELECTOR
 );
 
-$signed_headers = $signature -> get_signed_headers_mod($to, $subject.'2', $message, $headers);//Body and headers alredy modifited
-mail($to, $subject.'2', $message, $headers);
-echo '<br>2:'.$signed_headers.'<br>';
+$signed_headers = $signature -> get_signed_headers_mod($to, $subject, $message, $headers);//Body and headers alredy modifited
+mail($to, $subject, $message, $headers);
+echo '<br>3:'.$signed_headers.'<br>';
 
-// 3) NOW YOU WILL DO (after setting up the config file and your DNS records) :
+// 4) NOW YOU WILL DO (after setting up the config file and your DNS records) :
 
+$subject=$subject_orig.'4'; 
+$message=$message_orig;
+$headers=$headers_orig;
 // Make sure linefeeds are in CRLF format - it is essential for signing
 $message = preg_replace('/(?<!\r)\n/', "\r\n", $message);
 $headers = preg_replace('/(?<!\r)\n/', "\r\n", $headers);
-
+//require_once('mail-signature.class.php');
 $signature = new mail_signature(
 	MAIL_RSA_PRIV,
 	MAIL_RSA_PASSPHRASE,
 	MAIL_DOMAIN,
 	MAIL_SELECTOR
 );
-$signed_headers = $signature -> get_signed_headers($to, $subject.'3', $message, $headers);//$message and $headers modification before in line current-20
+$signed_headers = $signature -> get_signed_headers($to, $subject, $message, $headers);//$message and $headers modification before in line current-20
 
-mail($to, $subject.'3', $message, $signed_headers.$headers);//add hand result get_signed_headers
-echo '<br>3:'.$signed_headers.'<br>';
+mail($to, $subject, $message, $signed_headers.$headers);//add hand result get_signed_headers
+echo '<br>4:'.$signed_headers.'<br>';
 
 
-// 4) OR USE OPTIONS TO ADD SOME FLAVOR :
+// 5) OR USE OPTIONS TO ADD SOME FLAVOR :
 
+$subject=$subject_orig.'5'; 
+$message=$message_orig;
+$headers=$headers_orig;
+// Make sure linefeeds are in CRLF format - it is essential for signing
 $message = preg_replace('/(?<!\r)\n/', "\r\n", $message);
 $headers = preg_replace('/(?<!\r)\n/', "\r\n", $headers);
-
+//require_once('mail-signature.class.php');
 $options = array(
 	'use_dkim' => false,
 	'use_domainKeys' => true,
@@ -102,10 +118,6 @@ $options = array(
 		'subject'
 	)
 );
-
-require_once('mail-signature.class.php');
-require_once('mail-signature.config.php');
-
 $signature = new mail_signature(
 	MAIL_RSA_PRIV,
 	MAIL_RSA_PASSPHRASE,
@@ -114,8 +126,7 @@ $signature = new mail_signature(
 	$options
 );
 $signed_headers = $signature -> get_signed_headers($to, $subject.'4', $message, $headers);//$message and $headers modification before in line current-20
-
-mail($to, $subject.'4', $message, $signed_headers.$headers);//add hand result get_signed_headers
-echo '<br>4:'.$signed_headers.'<br>';
+mail($to, $subject, $message, $signed_headers.$headers);//add hand result get_signed_headers
+echo '<br>5:'.$signed_headers.'<br>';
 
 ?>
