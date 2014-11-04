@@ -7,6 +7,8 @@
 	So Domain Keys is disabled by default, enable it in the options if you need it.
 */
 
+//define('MAILHEADER_EOL', "\r\n");
+define('MAILHEADER_EOL', "\n");
 
 // YOUR E-MAIL
 $to = 'test@example.com';
@@ -14,9 +16,9 @@ $to = 'test@example.com';
 $subject = 'My subject';
 
 $headers =
-'MIME-Version: 1.0
-From: "Sender" <sender@example.com>
-Content-type: text/html; charset=utf8';
+'MIME-Version: 1.0'.MAILHEADER_EOL.
+'From: "Sender" <sender@example.com>'.MAILHEADER_EOL.
+'Content-type: text/html; charset=utf8';
 
 $message =
 	'<html>
