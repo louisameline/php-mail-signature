@@ -53,7 +53,6 @@ mail($to, $subject, $message, $headers);
 
 // Make sure linefeeds are in CRLF format - it is essential for signing
 require_once('mail-signature.class.php');
-require_once('mail-signature.config.php');
 
 get_signed_headers_mod($to, $subject, $message, $headers);
 mail($to, $subject, $message, $headers);//Body and headers alredy modifited

@@ -42,7 +42,7 @@ $message_orig =
 $subject=$subject_orig.'1'; 
 $message=$message_orig;
 $headers=$headers_orig;
-mail($to, $subject.'1', $message, $headers);
+mail($to, $subject, $message, $headers);
 echo '<br>1:-<br>'.MAILHEADER_EOL;
 
 // 2) NOW YOU WILL DO (after setting up the config file and your DNS records) :
@@ -53,7 +53,7 @@ $headers=$headers_orig;
 //require_once('mail-signature.class.php');
 get_signed_headers_mod($to, $subject, $message, $headers);
 mail($to, $subject, $message, $headers);//Body and headers alredy modifited
-echo '<br>2:+<br>';
+echo '<br>2:+<br>'.MAILHEADER_EOL;
 
 // 3) NOW YOU WILL DO (after setting up the config file and your DNS records) :
 // don't Make sure linefeeds are in CRLF format - it is essential for signing
@@ -71,7 +71,7 @@ $signature = new mail_signature(
 
 $signed_headers = $signature -> get_signed_headers_mod($to, $subject, $message, $headers);//Body and headers alredy modifited
 mail($to, $subject, $message, $headers);
-echo '<br>3:'.$signed_headers.'<br>';
+echo '<br>3:'.$signed_headers.'<br>'.MAILHEADER_EOL;
 
 // 4) NOW YOU WILL DO (after setting up the config file and your DNS records) :
 
@@ -91,7 +91,7 @@ $signature = new mail_signature(
 $signed_headers = $signature -> get_signed_headers($to, $subject, $message, $headers);//$message and $headers modification before in line current-20
 
 mail($to, $subject, $message, $signed_headers.$headers);//add hand result get_signed_headers
-echo '<br>4:'.$signed_headers.'<br>';
+echo '<br>4:'.$signed_headers.'<br>'.MAILHEADER_EOL;
 
 
 // 5) OR USE OPTIONS TO ADD SOME FLAVOR :
@@ -127,6 +127,6 @@ $signature = new mail_signature(
 );
 $signed_headers = $signature -> get_signed_headers($to, $subject.'4', $message, $headers);//$message and $headers modification before in line current-20
 mail($to, $subject, $message, $signed_headers.$headers);//add hand result get_signed_headers
-echo '<br>5:'.$signed_headers.'<br>';
+echo '<br>5:'.$signed_headers.'<br>'.MAILHEADER_EOL;
 
 ?>
