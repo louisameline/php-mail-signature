@@ -158,7 +158,7 @@ class mail_signature {
 		
 			// lower case fields
 			foreach($options['signed_headers'] as $key => $value){
-				$options['signed_headers']['key'] = strtolower($value);
+				$options['signed_headers'][$key] = strtolower($value);
 			}
 			
 			// delete the default fields if a custom list is provided, not merge
