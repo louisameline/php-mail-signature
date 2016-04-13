@@ -86,7 +86,7 @@ $options = array(
 	'dk_canonicalization' => 'nofws',
 	// if you want to sign the mail on a different list of headers than the
 	// default one (see class constructor). Case-insensitive.
-	'signature_headers' => array(
+	'signed_headers' => array(
 		'message-Id',
 		'Content-type',
 		'To',
