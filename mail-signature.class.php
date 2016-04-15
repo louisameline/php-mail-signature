@@ -1,7 +1,7 @@
 <?php
 
 /**
- * php-mail-signature v1.0.2
+ * php-mail-signature v1.0.3
  * 
  * https://github.com/louisameline/php-mail-signature
  * Author:	Louis Ameline - 04/2012
@@ -464,46 +464,39 @@ class mail_signature {
 		
 		$signed_headers = '';
 		
-		// prevent header injection
-		if(strpos($to, "\n") !== false or strpos($subject, "\n") !== false){
-			trigger_error(sprintf('Aborted mail signature because of potential header injection : %s', $to), E_USER_WARNING);
+		if(!empty($to) or !empty($subject)){
+			
+			/*
+			 * To and Subject are not supposed to be present in $headers if you
+			 * use the php mail() function, because it takes care of that itself in
+			 * parameters for security reasons, so we reconstruct them here for the
+			 * signature only
+			 */
+			$headers .=
+				(mb_substr($headers, mb_strlen($headers, 'UTF-8')-2, 2, 'UTF-8') == "\r\n") ?
+				'' :
+				"\r\n";
+			
+			if(!empty($to)) $headers .= 'To: '.$to."\r\n";
+			if(!empty($subject)) $headers .= 'Subject: '.$subject."\r\n";
+		}
+		
+		// get the clean version of headers used for signature
+		$this -> canonicalized_headers_relaxed = $this -> _dkim_canonicalize_headers_relaxed($headers);
+		
+		if(!empty($this -> canonicalized_headers_relaxed)){
+			
+			// Domain Keys must be the first header, it is an RFC (stupid) requirement
+			if($this -> options['use_domainKeys'] == true){
+				$signed_headers .= $this -> _get_dk_header($body, $headers);
+			}
+			
+			if($this -> options['use_dkim'] == true){
+				$signed_headers .= $this -> _get_dkim_header($body);
+			}
 		}
 		else {
-			
-			if(!empty($to) or !empty($subject)){
-				
-				/*
-				 * To and Subject are not supposed to be present in $headers if you
-				 * use the php mail() function, because it takes care of that itself in
-				 * parameters for security reasons, so we reconstruct them here for the
-				 * signature only
-				 */
-				$headers .=
-					(mb_substr($headers, mb_strlen($headers, 'UTF-8')-2, 2, 'UTF-8') == "\r\n") ?
-					'' :
-					"\r\n";
-				
-				if(!empty($to)) $headers .= 'To: '.$to."\r\n";
-				if(!empty($subject)) $headers .= 'Subject: '.$subject."\r\n";
-			}
-			
-			// get the clean version of headers used for signature
-			$this -> canonicalized_headers_relaxed = $this -> _dkim_canonicalize_headers_relaxed($headers);
-			
-			if(!empty($this -> canonicalized_headers_relaxed)){
-				
-				// Domain Keys must be the first header, it is an RFC (stupid) requirement
-				if($this -> options['use_domainKeys'] == true){
-					$signed_headers .= $this -> _get_dk_header($body, $headers);
-				}
-				
-				if($this -> options['use_dkim'] == true){
-					$signed_headers .= $this -> _get_dkim_header($body);
-				}
-			}
-			else {
-				trigger_error('No headers found to sign the e-mail with !', E_USER_WARNING);
-			}
+			trigger_error('No headers found to sign the e-mail with !', E_USER_WARNING);
 		}
 		
 		return $signed_headers;
