@@ -107,6 +107,4 @@ $signature = new mail_signature(
 $signed_headers = $signature -> get_signed_headers($to, $subject, $message, $headers);
 
 mail($to, $subject, $message, $signed_headers.$headers);
-
-?>
 ```

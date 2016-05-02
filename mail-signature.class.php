@@ -1,7 +1,7 @@
 <?php
 
 /**
- * php-mail-signature v1.0.3
+ * php-mail-signature
  * 
  * https://github.com/louisameline/php-mail-signature
  * Author:	Louis Ameline - 04/2012
@@ -32,7 +32,7 @@
  * 
  * @link https://github.com/louisameline/php-mail-signature
  * @author Louis Ameline
- * @version 1.0.2
+ * @version 1.0.3
  */
 
 /*
