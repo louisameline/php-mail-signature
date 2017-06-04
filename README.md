@@ -1,8 +1,7 @@
 php-mail-signature
 ==================
 
-A standalone PHP class to sign your e-mails with DKIM and Domain Keys 04/2012.
-License LGPL v2.1
+A standalone PHP class to sign your e-mails with DKIM and Domain Keys. License LGPL v2.1
 
 Project page : https://github.com/louisameline/php-mail-signature
 
@@ -15,7 +14,9 @@ This class is based on the work made on PHP-MAILER with the following difference
 
 If the class fails to sign the e-mail, the returned DKIM header will be empty and the mail will still be sent, just unsigned. A php warning is thrown for logging.
 
-NOTE: you will NOT be able to use Domain Keys with PHP's mail() function, since it does not allow to prepend the DK header before the To and Subject ones. DKIM is ok with that, but Domain Keys is not. If you still want Domain Keys, you will have to manage to send your mail straight to your MTA without the default mail() function.
+**NOTE**: you will NOT be able to use Domain Keys with PHP's mail() function, since it does not allow to prepend the DK header before the To and Subject ones. DKIM is ok with that, but Domain Keys is not. If you still want Domain Keys, you will have to manage to send your mail straight to your MTA without the default mail() function.
+
+**NOTE 2**: if your MTA is Qmail, make sure to read the note at the end of the Example below.
 
 Successfully tested against Gmail, Yahoo Mail, Live.com, AOL.com, appmaildev.com.
 I hope it helps and saves you plenty of time. Feedback is welcome.
@@ -107,4 +108,14 @@ $signature = new mail_signature(
 $signed_headers = $signature -> get_signed_headers($to, $subject, $message, $headers);
 
 mail($to, $subject, $message, $signed_headers.$headers);
+
+
+
+// NOTE: Qmail requires that the message and headers you pass to it have `\n` line breaks
+// (if you find other MTAs that have this behaviour, please let me know). To make things
+// work, just add these three lines right before your call to `mail(...)`:
+
+$message = str_replace("\r\n", "\n", $message);
+$headers = str_replace("\r\n", "\n", $headers);
+$signed_headers = str_replace("\r\n", "\n", $signed_headers);
 ```
