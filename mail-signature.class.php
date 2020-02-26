@@ -14,6 +14,7 @@
  * - it supports UTF-8
  * - it will let you choose the headers you want to base the signature on
  * - it will let you choose between simple and relaxed body canonicalization
+ * - it will let you choose between RSA/SHA-1 and RSA/SHA-256 hashing.
  * 
  * If the class fails to sign the e-mail, the returned DKIM header will be empty and the mail
  * will still be sent, just unsigned. A php warning is thrown for logging.
@@ -28,11 +29,12 @@
  * 
  * For more info, you should read :
  * @link http://www.ietf.org/rfc/rfc4871.txt
+ * @link https://www.ietf.org/rfc/rfc8301.txt
  * @link http://www.zytrax.com/books/dns/ch9/dkim.html
  * 
  * @link https://github.com/louisameline/php-mail-signature
  * @author Louis Ameline
- * @version 1.0.3
+ * @version 1.2
  */
 
 /*
@@ -137,6 +139,21 @@ class mail_signature {
 			'dkim_body_canonicalization' => 'relaxed',
 			// "nofws" is recommended over "simple" for better chances of success
 			'dk_canonicalization' => 'nofws',
+
+			/*
+			 * Specify whether DKIM signatures should be signed with SHA-256 (recommended)
+			 * or the older, weaker SHA-1 (historic).  This variable takes either the value
+			 * "sha1" or "sha256", as those are the only two hashes supported by the current
+			 * version of DKIM.
+			 * 
+			 * RFC 8301 says that "rsa-sha1 MUST NOT be used for signing or verifying."
+			 * It is very highly recommended that you keep this set to "sha256".
+			 * 
+			 * This only affects DKIM signing.  DomainKeys, historic in its own right,
+			 * only supported SHA-1.
+			 */
+			'dkim_hash' => 'sha256',
+
 			/*
 			 * The default list of headers types you want to base the signature on. The
 			 * types here (in the default options) are to be put in lower case, but the
@@ -378,15 +395,14 @@ class mail_signature {
 	 * it is highly recommended that all linefeeds in the $body and $headers you submit
 	 * are in the CRLF (\r\n) format !! Otherwise signature may fail with some MTAs
 	 */
-	private function _get_dkim_header($body){
-		
+	private function _get_dkim_header($body){	
 		$body =
 			($this -> options['dkim_body_canonicalization'] == 'simple') ?
 			$this -> _dkim_canonicalize_body_simple($body) :
 			$this -> _dkim_canonicalize_body_relaxed($body);
 		
-		// Base64 of packed binary SHA-1 hash of body
-		$bh = rtrim(chunk_split(base64_encode(pack("H*", sha1($body))), 64, "\r\n\t"));
+		// Base64 of packed binary hash of body
+		$bh = rtrim(chunk_split(base64_encode(pack("H*", hash($this->options['dkim_hash'],$body))), 64, "\r\n\t"));
 		$i_part =
 			($this -> options['identity'] == null) ?
 			'' :
@@ -395,7 +411,7 @@ class mail_signature {
 		$dkim_header =
 			'DKIM-Signature: '.
 				'v=1;'."\r\n\t".
-				'a=rsa-sha1;'."\r\n\t".
+				'a=rsa-' . $this -> options['dkim_hash'] . ';'."\r\n\t".
 				'q=dns/txt;'."\r\n\t".
 				's='.$this -> selector.';'."\r\n\t".
 				't='.time().';'."\r\n\t".
@@ -415,7 +431,16 @@ class mail_signature {
 		
 		// $signature is sent by reference in this function
 		$signature = '';
-		if(openssl_sign($to_be_signed, $signature, $this -> private_key)){
+		$signing_algorithm = null;
+
+		if ($this->options['dkim_hash'] === 'sha256') {
+			$signing_algorithm = OPENSSL_ALGO_SHA256;
+		} else if ($this->options['dkim_hash'] === 'sha1') {
+			$signing_algorithm = OPENSSL_ALGO_SHA1;
+		} else {
+			die('Unsupported dkim_hash value "' . $this->options['dkim_hash'] . '" -- DKIM only supports sha256 and sha1.');
+		}
+		if(openssl_sign($to_be_signed, $signature, $this -> private_key, $signing_algorithm)){
 			$dkim_header .= rtrim(chunk_split(base64_encode($signature), 64, "\r\n\t"))."\r\n";
 		}
 		else {
@@ -445,6 +470,7 @@ class mail_signature {
 			$this -> _dk_canonicalize_nofws($body, $sHeaders);
 		
 		$signature = '';
+
 		if(openssl_sign($to_be_signed, $signature, $this -> private_key, OPENSSL_ALGO_SHA1)){
 			
 			$domainkeys_header .= rtrim(chunk_split(base64_encode($signature), 64, "\r\n\t"))."\r\n";
